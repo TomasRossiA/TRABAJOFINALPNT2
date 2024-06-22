@@ -9,8 +9,6 @@
       <thead>
         <tr>
           <th scope="col">Nombre</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
           <th scope="col">Estado</th>
           <th scope="col">Acciones</th>
         </tr>
@@ -18,8 +16,6 @@
       <tbody>
         <tr v-for="task in pendingTasks" :key="task.id">
           <td>{{ task.title }}</td>
-          <td>{{ task.date }}</td>
-          <td>{{ task.assignedTo }}</td>
           <td>
             <input type="checkbox" v-model="task.completed" @change="updateTask(task)">
             <span v-if="task.completed" class="text-success">Completada</span>
@@ -30,7 +26,7 @@
           </td>
         </tr>
         <tr v-if="pendingTasks.length === 0">
-          <td colspan="5" class="text-center">No hay tareas pendientes.</td>
+          <td colspan="3" class="text-center">No hay tareas pendientes.</td>
         </tr>
       </tbody>
     </table>
@@ -40,15 +36,11 @@
       <thead>
         <tr>
           <th scope="col">Nombre</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="task in completedTasks" :key="task.id">
           <td>{{ task.title }}</td>
-          <td>{{ task.date }}</td>
-          <td>{{ task.assignedTo }}</td>
         </tr>
       </tbody>
     </table>
@@ -59,15 +51,11 @@
       <thead>
         <tr>
           <th scope="col">Nombre</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="task in canceledTasks" :key="task.id">
           <td>{{ task.title }}</td>
-          <td>{{ task.date }}</td>
-          <td>{{ task.assignedTo }}</td>
         </tr>
       </tbody>
     </table>
@@ -83,10 +71,6 @@
         <div v-if="errors.noteName" class="alert alert-danger">{{ errors.noteName }}</div>
       </div>
       <div class="form-group">
-        <label for="noteDate">Fecha</label>
-        <input type="date" class="form-control" id="noteDate" v-model="noteDate">
-      </div>
-      <div class="form-group">
         <label for="noteMessage">Mensaje</label>
         <textarea class="form-control" id="noteMessage" v-model="noteMessage"></textarea>
         <div v-if="errors.noteMessage" class="alert alert-danger">{{ errors.noteMessage }}</div>
@@ -99,18 +83,16 @@
       <thead>
         <tr>
           <th scope="col">Nombre</th>
-          <th scope="col">Fecha</th>
           <th scope="col">Mensaje</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(note, index) in personalNotes" :key="index">
           <td>{{ note.name }}</td>
-          <td>{{ note.date }}</td>
           <td>{{ note.message }}</td>
         </tr>
         <tr v-if="personalNotes.length === 0">
-          <td colspan="3" class="text-center">No hay notas personales.</td>
+          <td colspan="2" class="text-center">No hay notas personales.</td>
         </tr>
       </tbody>
     </table>
@@ -130,10 +112,7 @@ export default {
     const personalNotes = ref([]);
     const error = ref(null);
     const taskName = ref('');
-    const taskDate = ref('');
-    const assignedTo = ref('');
     const noteName = ref('');
-    const noteDate = ref('');
     const noteMessage = ref('');
     const errors = ref({});
 
@@ -163,18 +142,12 @@ export default {
         isValid = false;
       }
 
-      if (assignedTo.value.trim().length < 4) {
-        errors.value.assignedTo = 'El nombre debe tener al menos 4 letras.';
-        isValid = false;
-      }
       return isValid;
     };
 
     const addTask = async () => {
       const taskData = {
         title: taskName.value,
-        date: taskDate.value,
-        assignedTo: assignedTo.value,
         completed: false
       };
       try {
@@ -211,8 +184,6 @@ export default {
 
     const clearForm = () => {
       taskName.value = '';
-      taskDate.value = '';
-      assignedTo.value = '';
       errors.value = {};
     };
 
@@ -220,7 +191,6 @@ export default {
       if (validateNoteForm()) {
         const newNote = {
           name: noteName.value,
-          date: noteDate.value,
           message: noteMessage.value
         };
         personalNotes.value.push(newNote);
@@ -247,7 +217,6 @@ export default {
 
     const clearNoteForm = () => {
       noteName.value = '';
-      noteDate.value = '';
       noteMessage.value = '';
     };
 
@@ -264,10 +233,7 @@ export default {
       personalNotes,
       error,
       taskName,
-      taskDate,
-      assignedTo,
       noteName,
-      noteDate,
       noteMessage,
       errors,
       validateAndAddTask,
@@ -282,9 +248,141 @@ export default {
 };
 </script>
 
-
-
-
 <style scoped>
-/* Estilos opcionales para el componente TaskManager */
+.container {
+  font-family: 'Arial', sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.alert {
+  margin-bottom: 15px;
+}
+
+.section-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #343a40;
+  text-transform: uppercase;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+  border: 1px solid #dee2e6;
+  padding: 12px;
+  text-align: center;
+}
+
+.table th {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.table .text-success {
+  color: #28a745;
+}
+
+.table .text-danger {
+  color: #dc3545;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.alert-danger strong {
+  font-weight: bold;
+}
+
+.text-muted {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-small {
+  font-size: 14px;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
+
+
+

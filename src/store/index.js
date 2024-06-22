@@ -41,15 +41,12 @@ export default createStore({
     },
     async addTask({ commit }, taskData) {
       try {
-        // Aseguramos que los datos obligatorios estén presentes
         const response = await axios.post(apiBaseUrl, {
           title: taskData.title,
-          completed: false,
-          date: taskData.date, // Incluir fecha
-          assignedTo: taskData.assignedTo // Incluir persona asignada
+          completed: false
         });
-        commit('addToTasks', response.data); // Agregar la tarea al estado
-        return response.data; // Devolver la tarea creada
+        commit('addToTasks', response.data);
+        return response.data;
       } catch (error) {
         commit('setError', error.message);
         throw error;
@@ -67,20 +64,15 @@ export default createStore({
     },
     async updateTask({ commit, state }, taskData) {
       try {
-        // Aseguramos que los datos obligatorios estén presentes
         const response = await axios.put(`${apiBaseUrl}/${taskData.id}`, {
           title: taskData.title,
-          completed: taskData.completed,
-          date: taskData.date, // Incluir fecha
-          assignedTo: taskData.assignedTo // Incluir persona asignada
+          completed: taskData.completed
         });
-        // Actualizar localmente el estado de la tarea según la respuesta del servidor
         if (response.data.completed) {
           commit('addToCompletedTasks', response.data);
         } else {
           commit('removeFromCompletedTasks', response.data.id);
         }
-        // Actualizar el estado general de las tareas
         commit('setTasks', [...state.tasks]);
       } catch (error) {
         console.error('Error al actualizar tarea:', error);

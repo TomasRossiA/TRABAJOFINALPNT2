@@ -32,7 +32,7 @@ export default {
     const fetchTasks = async () => {
       try {
         await store.dispatch('fetchTasks');
-        state.tasks = store.state.tasks; // Actualizar las tareas desde el estado de Vuex
+        state.tasks = store.state.tasks;
         state.error = store.state.error;
       } catch (error) {
         state.error = error.message;
@@ -42,7 +42,7 @@ export default {
     const addTask = async (taskData) => {
       try {
         await store.dispatch('addTask', taskData);
-        await fetchTasks(); // Después de agregar una tarea, actualizar la lista
+        await fetchTasks();
       } catch (error) {
         state.error = error.message;
       }
@@ -51,7 +51,7 @@ export default {
     const deleteTask = async (taskId) => {
       try {
         await store.dispatch('deleteTask', taskId);
-        await fetchTasks(); // Después de eliminar una tarea, actualizar la lista
+        await fetchTasks();
       } catch (error) {
         state.error = error.message;
       }
@@ -60,13 +60,13 @@ export default {
     const updateTask = async (taskData) => {
       try {
         await store.dispatch('updateTask', taskData);
-        await fetchTasks(); // Después de actualizar una tarea, actualizar la lista
+        await fetchTasks();
       } catch (error) {
         state.error = error.message;
       }
     };
 
-    onMounted(fetchTasks); // Obtener las tareas al montar el componente
+    onMounted(fetchTasks);
 
     const completedTasksCount = computed(() => state.tasks.filter(task => task.completed).length);
 
@@ -82,5 +82,4 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos opcionales para el componente HomePage */
 </style>
